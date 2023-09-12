@@ -1,1 +1,2 @@
 Kyle Machalec
+Kali is successfully installed on my personal windows laptop. I plan to do all of the Kali assignments on my personal computer. After getting Kali running, I noticed that all of the desktop icons in the virtual machine are rather small.
