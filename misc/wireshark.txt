@@ -1,1 +1,64 @@
+Name: Kyle Machalec
+
 ===== DAYTIME =====
+1)
+1 192.168.234.128 129.6.15.28 TCP [SYN] Seq=0 Win=64240 Len=0 MSS=1460 SACK_PERM TSval=4007271620 TSecr=0 WS=128
+2 129.6.15.28 192.168.234.128 TCP [SYN, ACK] Seq=0 Ack=1 Win=64240 Len=0 MSS=1460
+3 192.168.234.128 129.6.15.28 TCP [ACK] Seq=1 Ack=1 Wi64240 Len=0
+4 129.6.15.28 192.168.234.128 DAYTIME DAYTIME Response
+5 192.168.234.128 129.6.15.28 TCP [FIN, ACK] Seq=1 Ack=53 Win=64188 Len=0
+6 129.6.15.28 192.168.234.128 TCP [ACK] Seq=53 Ack=2 Win=64239 Len=0
+
+2)
+Port 56736
+
+3)
+The server uses the client's port number to ensure the server sends its reply to the client process that initiated the request.
+
+4)
+4 129.6.15.28 192.168.234.128 DAYTIME DAYTIME Response
+
+5)
+The frame content is 60200 23-09-13 19:18:30 50 0 0 150.6 UTC(NIST) *
+60200 is the Modified Julian Date (the number of whole days since midnight on November 17, 1858)
+23-09-13 is the date (September 13, 2023)
+19:18:30 is the time in hours, minutes, and seconds in Coordinated Universal Time
+50 means daylight savings time
+The first 0 states that no leap second will be added or subtracted at midnight on the last day of the current month
+The second 0 represents the health of the service (0 means healthy)
+150.6 is the number of milliseconds that NIST adds to the time to roughly compensate for network delays
+UTC(NIST) indicates that the time uses the UTC(NIST) time scale
+
+6)
+[SYN] (synchronize) is a TCP packet sent to another computer requesting that a connection be established between them
+
+7)
+[ACK] (acknowledgement) is a signal that a device sends to indicate that data has been received successfully
+
+8)
+[FIN] (finish) is used to request for connection termination
+
+9)
+The nc client initiated the closing of the TCP connection because the client sent the [FIN] signal. The client can be identified as the sender of this message because the source IP matches the client's IP.
+
+===== HTTP =====
+1)
+3 TCP connections were opened since there were 3 SYN requests from the client
+
+2)
+Homepage requests:
+5 192.168.234.128 45.79.89.123 HTTP GET /index.html HTTP/1.1
+34 192.168.234.128 45.79.89.123 HTTP GET /index.html HTTP/1.1
+
+In the above frame summaries, the client (indentified by source IP) requested index.html from the server (identified by destination IP) indicated by "GET"
+
+3)
+JPEG requests:
+11 192.168.234.128 45.79.89.123 HTTP GET /jeff_square_head.jpg HTTP/1.1
+38 192.168.234.128 45.79.89.123 HTTP GET /jeff_square_head.jpg HTTP/1.1
+
+In the above frame summaries, the client (indentified by source IP) requested jeff_square_head.jpg from the server (identified by destination IP) indicated by "GET"
+
+===== QUESTIONS =====
+Why does Wireshark detect two requests each for the homepage and photograph?
+What does [PSH] mean?
