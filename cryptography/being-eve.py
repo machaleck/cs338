@@ -27,7 +27,7 @@ def is_prime(num): #checks to see if num is prime
     return True
 
 pq = []
-def find_pq(n): #finds the values of p and q given n from the public key. p and q are interchangeable
+def find_pq(n): #finds the values of p and q given n from the public key. p and q are interchangeable in RSA
     for p in range(100): #the two ranges of 100 were chosen since n = 5561 is less than 100 * 100. It is possible that p and q 
     #could be larger than 100, but in that case, the ranges could just be increased.
         for q in range(100):
