@@ -1,3 +1,4 @@
+#Written by Kyle Machalec
 #DIFFIE HELLMAN CODE
 #Intercepted values:
 g = 7
