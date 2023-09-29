@@ -43,7 +43,7 @@ aqUXG0yvR9kSqbT0Jl6rtMlWiDjltyJiJSnFkK4yytJgSkNF4DPkNA==
 -----END RSA PRIVATE KEY-----
 
 3)
-The private key file should have the RSA version, the RSA modulus n, RSA public exponent e, RSA private exponent d, the prime factor p of n, the prime factor q of n, the exponents 1 and 2: d mod (p - 1) and d mod (q - 1), the coefficient: q^(-1) mod p, and information (prime: prime factor r_i of n, exponent: d_i = d mod (r_i - 1), and coefficient: t_i = (r_1 * r_2 * ... * r_(i-1))^(-1) mod r_i)) for the additional primes r_3, ..., r_u, in order.
+I expect the private key file to contain the RSA version, the RSA modulus n, RSA public exponent e, RSA private exponent d, the prime factor p of n, the prime factor q of n, the exponents 1 and 2: d mod (p - 1) and d mod (q - 1), the coefficient: q^(-1) mod p, and potentially optional information about the additional primes r_3, ..., r_u, in order (prime: prime factor r_i of n, exponent: d_i = d mod (r_i - 1), and coefficient: t_i = (r_1 * r_2 * ... * r_(i-1))^(-1) mod r_i)).
 
 4)
 I copied the content from id_rsa_homework, excluding the BEGIN RSA PRIVATE KEY and END RSA PRIVATE KEY lines, into Lapo Luchini's ASN.1 decoder.
