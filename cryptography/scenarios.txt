@@ -1,1 +1,44 @@
 Name: Kyle Machalec
+
+1)
+Alice and Bob use Diffie-Hellman to agree on a shared secret key K.
+Using K, Alice encrypts her message M using AES(K, M), producing the ciphertext C.
+Alice sends C to Bob.
+Bob decrypts C using AES_D(K, C) to get M.
+
+2)
+Alice creates a SHA-256 hash of her message M using H(M) to get a digest D.
+Alice concatenates M with D resulting in M||D, which she then sends to Bob.
+Bob receives M'||D, where M' might be a modified version of M, and computes H(M) to get D', ensuring that his D' == D.
+If D' != D, then Bob knows that the original message from Alice was modified.
+
+3)
+Alice and Bob use Diffie-Hellman to agree on a shared secret key K.
+Alice creates a SHA-256 hash of her message M using H(M) to get a digest D.
+Alice encryptes D using E(S_A, D) to get a signature Sig.
+Alice encryptes M using AES(K, M) to get the ciphertext C.
+Alice concatenates Sig with C, sending Sig||C to Bob.
+Bob decrypts C using AES_D(K, C) to get M.
+Bob decrypts Sig using E(P_A, Sig) to get D.
+Bob hashes his decrypted M using H(M) to get D'.
+Bob knows M came from Alice if and only if D' == D.
+
+4)
+A) There could be a 3rd party who did an AITM attack to intercept Alice's Diffie-Hellman exchange with Bob, convincing Bob that he was talking to Alice and vice versa. The 3rd party would then encrypt their own message M' using K to send Bob an altered ciphertext C'. This is not a good claim since Bob would be able to tell the message was altered after he decrypts Sig using E(P_A, Sig) to get D and hashes M' using H(M) to get D', finding that D != D'.
+B) Another claim is that the 3rd party did an AITM and also gained access to Alice's secret key S_A. Along with sending an altered C' as in claim A, the 3rd party would be able to create their own signature that matches M' by hashing M' using H(M) to get D' and encrypting D' using E(S_A, D') to get Sig'. When Bob decrypts Sig' using E(P_A, Sig') and compares it to the decrypted M' using H(M'), he would find that the two match, leading him to believe that Alice sent M'. This claim is plausible since stories about people being unconcerned about the nuances of security and privacy are common, and Alice could have accidentally leaked her private key. Also, AITM attacks are a well recognized problem of the Diffie-Hellman key exchange.
+C) Alice could also claim that the C in her contract was modified due to some hardware/software error or solar storm. This is extremely unlikely since Sig would also need to be changed in a very specific way to match the modified C to prevent Bob from noticing that Alice's message was modified. The probability of that happening is far too small to be reasonable.
+
+5)
+To compute Sig_CA, the CA would first compile the data from the rest of the certificate like Bob's name, P_B, the current date, the expiration date of the certificate, etc. Then, the CA would hash the compiled data and encrypt it with the CA's secret key as described by the following formula: Sig_CA = E(S_CA, H(data)).
+
+6)
+Having Cert_B is not enough since anyone can get Cert_B from having previously communicated with Bob (visitng bob.com).
+First, Bob hashes Cert_B to get a digest D, and then encrypts D with E(S_B, D) to get a ciphertext C.
+Bob sends Cert_B and C to Alice.
+Alice decrypts C with the P_B from Cert_B using E(P_B, C) to get D'.
+Alice hashes the Cert_B from Bob using H(Cert_B) to get D.
+If D' == D, Alice can conclude that Bob has the S_B that goes with the P_B in Cert_B.
+
+7)
+A) Mal could trick the CA by providing convincing fake documents and claim that her own public key is associated with Bob's website and name.
+B) Mal could hack the CA and steal S_CA. With S_CA, Mal could create her own seemingly valid certificate that associates her public key with Bob's website and name.
