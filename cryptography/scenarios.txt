@@ -32,12 +32,13 @@ C) Alice could also claim that the C in her contract was modified due to some ha
 To compute Sig_CA, the CA would first compile the data from the rest of the certificate like Bob's name, P_B, the current date, the expiration date of the certificate, etc. Then, the CA would hash the compiled data and encrypt it with the CA's secret key as described by the following formula: Sig_CA = E(S_CA, H(data)).
 
 6)
-Having Cert_B is not enough since anyone can get Cert_B from having previously communicated with Bob (visitng bob.com).
-First, Bob hashes Cert_B to get a digest D, and then encrypts D with E(S_B, D) to get a ciphertext C.
-Bob sends Cert_B and C to Alice.
-Alice decrypts C with the P_B from Cert_B using E(P_B, C) to get D'.
-Alice hashes the Cert_B from Bob using H(Cert_B) to get D.
-If D' == D, Alice can conclude that Bob has the S_B that goes with the P_B in Cert_B.
+Having Cert_B is not enough since anyone can get Cert_B from having previously communicated with Bob (visiting bob.com).
+Alice and Bob use Diffie-Hellman to agree on a shared secret key K.
+Alice sends a random number R to Bob.
+Bob sends Alice E(S_B, H(R||K)).
+Alice uses E(P_B, E(S_B, H(R||K)))
+Alice computes H(R||K)
+If H(R||K) is the same H(R||K) sent to Alice, she can be confident that she is communicating with someone who has the S_B that goes with the P_B in Cert_B.
 
 7)
 A) Mal could trick the CA by providing convincing fake documents and claim that her own public key is associated with Bob's identity.
