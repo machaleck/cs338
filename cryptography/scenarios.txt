@@ -9,7 +9,7 @@ Bob decrypts C using AES_D(K, C) to get M.
 2)
 Alice creates a SHA-256 hash of her message M using H(M) to get a digest D.
 Alice concatenates M with D resulting in M||D, which she then sends to Bob.
-Bob receives M'||D, where M' might be a modified version of M, and computes H(M) to get D', ensuring that his D' == D.
+Bob receives M'||D, where M' might be a modified version of M, and computes H(M') to get D', ensuring that his D' == D.
 If D' != D, then Bob knows that the original message from Alice was modified.
 
 3)
