@@ -1,3 +1,4 @@
+#Written by Kyle Machalec
 import hashlib
 import binascii
 import argparse
