@@ -1,39 +1,70 @@
 Part 1
-Total time: [user time from a "time" command]
-Number of hashes computed: [count of the # of hashes computed] 
-Passwords cracked: [number cracked]
-Time per hash computed: [seconds per hash]
-Time per password cracked: [seconds per password]
-Passwords cracked per number of hashes computed: [passwords per hash]
+Total time: 0m0.289s
+Number of hashes computed: 267,516
+Passwords cracked: 2,734
+Time per hash computed: 1.08 * 10^-6 s/hash
+Time per password cracked: 1.06 * 10^-4 s/password
+Passwords cracked per number of hashes computed: 1.02 * 10^-2 passwords/hash
 
 Part 2
-Total time: [user time from a "time" command]
-Number of hashes computed: [count of the # of hashes computed] 
-Passwords cracked: [number cracked]
-Time per hash computed: [seconds per hash]
-Time per password cracked: [seconds per password]
-Passwords cracked per number of hashes computed: [passwords per hash]
+Total time: 34m41.343s
+Number of hashes computed: 1,357,738,009 
+Passwords cracked: 50
+Time per hash computed: 1.53 * 10^-6 s/hash
+Time per password cracked: 41.627 s/password
+Passwords cracked per number of hashes computed: 3.68 * 10^-8 passwords/hash
 
 Part 3
-Total time: [user time from a "time" command]
-Number of hashes computed: [count of the # of hashes computed] 
-Passwords cracked: [number cracked]
-Time per hash computed: [seconds per hash]
-Time per password cracked: [seconds per password]
-Passwords cracked per number of hashes computed: [passwords per hash]
-
-Part 4
-Which software did you use?
-What commands did you issue to do your password-cracking?
-How many passwords did you crack?
-How long did it take?
+Total time: 4m7.343s
+Number of hashes computed: 368,016,265
+Passwords cracked: 2,734
+Time per hash computed: 6.72 * 10^-7 s/hash
+Time per password cracked: 9.05 * 10^-2 s/password
+Passwords cracked per number of hashes computed: 7.43 * 10^-6 passwords/hash
 
 Analysis:
 - Did your time per hash computed change between phases? By what factor? Why?
+    Time per hash values for all 3 phases are around 10^-6 s/hash give or take 0.5 * 10^-6 s/hash.
+    These similar values are to be expected since the time needed to hash a string shouldn't be influenced much
+    by the value of the string, so the different types of hashed strings in the 3 parts shouldn't create a significant
+    difference in time per hash values.
+
 - Did your time per password crack change between phases? By what factor? Why?
+    Part 2 was by far the slowest in terms of time per password cracked. Part 2 was 
+    41.627 s/password/(9.05*10^-2 s/password) = 460 times slower than part 3 and
+    41.627 s/password/(1.06 * 10^-4 s/password) = 393,000 times slower than part 1.
+    Part 2 was so slow since each user's hashed password must match 2 randomly selected 
+    words from words.txt that are then concatenated and hashed.
+    This guessing game is far slower than parts 1 and 3, which simply linearly go through each word in 
+    words.txt, hash it, and compare the result with each user's hashed password (or hashed salt+password). 
+    Part 1 is faster than part 3 since part 1 is able to precompute all the hashes for each possible password 
+    and store them in a dictionary.
+
 - Suppose you wanted to precompute all the hashes for each possible password
 so you could just look up the password in a table indexed by the hash. How much
 memory would be required for each phase?
-- How well did hashcat or john do compared to your python program? Give details.
+    Phase 1 would need to store 267,516 hashes. Each hash is hashed by SHA-256, so 32 bytes are needed for each hash.
+    This means 267,516(32) = 8,560,512 bytes are needed to store all of the hashes. For each hash in the dictionary, there is
+    a password. Each password takes 16 bytes to store, so it would take 267,516(16) = 4,280,256 bytes to store the passwords,
+    and 267,516(32) = 8,560,512 bytes of mapping overhead. In total, 8,560,512 + 4,280,256 + 8,560,512 bytes = 21,401,280 bytes
+    would be needed.
+
+    Phase 2 would need to store 267,516 * 267,516 = 7.16 * 10^10 hashes, which is (7.16 * 10^10)(32) = 2.29 * 10^12 bytes.
+    Each hash would need to be mapped to a password, resulting in 7.16 * 10^10 words stored and (7.16 * 10^10)(16) = 
+    1.15 * 10^12 bytes needed to store those passwords and (7.16 * 10^10)(32) = 2.29 * 10^12 bytes needed for the mapping
+    overhead. In total, (2.29 * 10^12) + (1.15 * 10^12) + (2.29 * 10^12) = 5.73 * 10^12 bytes would be needed.
+
+    Assuming the salts were given, phase 3 would need to compute every hash of every possible pair of passwords
+    and salts, which would be 267,516(2,734) = 731,388,744 hashes and require 731,388,744(32) = 2.34 * 10^10 bytes to store.
+    Each hash would be mapped to a word, resulting in 731,388,744 words being stored and 731,388,744(16) = 1.17 * 10^10 bytes
+    needed to store the words and 731,388,744(32) = 2.34 * 10^10 bytes for mapping overhead.
+    In total, (2.34 * 10^10) + (1.17 * 10^10) + (2.34 * 10^10) = 5.85 * 10^10 bytes would be needed.
+
 - Give 3-4 reasons we should store password hashes and not the passwords themselves.
 Think in terms of threats, who the attackers might be, etc.
+    1) If someone unauthorized gets access to the files where hashed passwords are stored, they could not directly read the passwords.
+    2) If passwords are stored as hashes, then clients can hash their password before sending it across a network. 
+       Along with encryption, hashed passwords add an extra level of security against eavesdroppers. Once the server receives
+       the hashed password, it can compare the received password to the stored password hash associated with the corresponding account.
+    3) Since the passwords are hashed, we know that all hashed passwords will be a fixed length. This can make it easier to
+       design data structures for these hashes instead of dealing with variable length passwords.
